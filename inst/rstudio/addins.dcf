@@ -1,4 +1,9 @@
-Name: Browse remote file
+Name: Browse to remote file
 Description: Opens browser to current selection on Github.
 Binding: browse
+Interactive: false
+
+Name: Link to remote file
+Description: Returns the link to current selection on Github
+Binding: link
 Interactive: false

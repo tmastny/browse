@@ -3,7 +3,10 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-browse makes it easy to open Github links from RStudio.
+browse makes it easy to open Github links from RStudio. 
+Try the `Browse remote files` addin while highlighting text in a file.
+
+![](browse.gif)
 
 ## Installation
 
@@ -29,4 +32,10 @@ You can also use the relative file path:
 browse("R/browse.R#L6-L9")
 browse("R/browse.R#L6")
 browse("R/browse.R")
+```
+
+Or just get the link to share with others:
+
+```r
+link("R/browse.R")
 ```
