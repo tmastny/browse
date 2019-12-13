@@ -2,5 +2,5 @@
 
 export("%>%")
 export(browse)
-export(github_url)
+export(link)
 importFrom(magrittr,"%>%")

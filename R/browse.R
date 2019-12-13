@@ -12,6 +12,7 @@
 #'
 #' # works on RStudio selection
 #' link()
+#'
 #' # opens URL in default browser
 #' \dontrun{
 #' link("R/install.R") %>%
@@ -62,7 +63,7 @@ print.browse_link <- function(x, ...) {
 #' browse("R/browse.R")
 #' }
 #'
-#' @inheritParams github_url
+#' @inheritParams link
 #' @export
 browse <- function(path = NULL) {
   link(path) %>%

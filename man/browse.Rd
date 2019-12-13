@@ -7,13 +7,12 @@
 browse(path = NULL)
 }
 \arguments{
-\item{path}{The relative path of the file from the top of the git repo.}
+\item{path}{The relative path of the file from the top of the git repo.
+The default, \code{path = NULL} works on a RStudio selection.}
 }
 \description{
 Takes a relative file path (with option line numbers)
 and opens the corresponding Github permalink in your default browser.
-
-The default, \code{path = NULL} works on a RStudio selection.
 }
 \examples{
 \dontrun{
