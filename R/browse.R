@@ -28,6 +28,10 @@ link <- function(path = NULL) {
   github_url(path)
 }
 
+link_addin <- function() {
+  rstudioapi::sendToConsole(link(), execute = FALSE)
+}
+
 github_url <- function(path) {
   repo_url <- git2r::remote_url() %>%
     stringr::str_sub(end = -5)
