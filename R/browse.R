@@ -1,3 +1,7 @@
+link_addin <- function() {
+  rstudioapi::sendToConsole(link(), execute = FALSE)
+}
+
 #' Link to Remote File
 #'
 #' Creates a Github permalink based on the repo in the current working directory.
@@ -5,6 +9,10 @@
 #'
 #' @param path The relative path of the file from the top of the git repo.
 #' The default, \code{path = NULL} works on a RStudio selection.
+#'
+#' @param remote Name of the remote to link to.
+#' Optionally, you can change by setting
+#' \code{options(browse.remote.default = "remote_name")}.
 #'
 #' @examples
 #' link("R/browse.R#L6-L9")
@@ -20,20 +28,33 @@
 #' }
 #'
 #' @export
-link <- function(path = NULL) {
+link <- function(path = NULL, remote = "origin") {
   if (is.null(path)) {
     path <- selection_path()
   }
 
-  github_url(path)
+  current_remote_sha_url(remote) %>%
+    add_path_to_url(path)
 }
 
-link_addin <- function() {
-  rstudioapi::sendToConsole(link(), execute = FALSE)
+add_path_to_url <- function(url, path) {
+  UseMethod("add_path_to_url")
 }
 
-github_url <- function(path) {
-  repo_url <- git2r::remote_url() %>%
+add_path_to_url.default <- function(url, path) {
+  paste0(url, path$path, "#L", path$start, "-L", path$end)
+}
+
+add_path_to_url.gitlab <- function(url, path) {
+  paste0(url, path$path, "#L", path$start)
+}
+
+current_remote_sha_url <- function(remote) {
+  if (!is.null(getOption("browse.remote.default"))) {
+    remote <- getOption("browse.remote.default")
+  }
+
+  repo_url <- git2r::remote_url(remote = remote) %>%
     stringr::str_sub(end = -5)
 
   head <- git2r::repository_head()
@@ -41,15 +62,29 @@ github_url <- function(path) {
   commit <- git2r::lookup_commit(head) %>%
     as.data.frame()
 
-  line_url <- paste0(repo_url, "/blob/", commit$sha, "/", path)
+  repo_sha_url <- paste0(repo_url, "/blob/", commit$sha, "/")
 
-  class(line_url) <- c("browse_link", class(line_url))
-  line_url
+  class(repo_sha_url) <- urltools::domain(repo_sha_url) %>%
+    urltools::suffix_extract() %>%
+    .$domain
+
+  repo_sha_url
 }
 
-print.browse_link <- function(x, ...) {
-  cat(x)
-  invisible(x)
+selection_path <- function(url, path) {
+  doc <- rstudioapi::getSourceEditorContext()
+  range <- rstudioapi::primary_selection(doc$selection)$range %>%
+    rstudioapi::as.document_range()
+
+  start <- range$start[[1]]
+  end <- range$end[[1]]
+
+  absolute_project_path <- paste0(here::here(), .Platform$file.sep)
+  absolute_file_path <- path.expand(doc$path)
+
+  relative_file_path <- stringr::str_remove(absolute_file_path, absolute_project_path)
+
+  list(path = relative_file_path, start = start, end = end)
 }
 
 #' Opens Github File in Default Browser
@@ -69,23 +104,7 @@ print.browse_link <- function(x, ...) {
 #'
 #' @inheritParams link
 #' @export
-browse <- function(path = NULL) {
+browse <- function(path = NULL, remote = "origin") {
   link(path) %>%
     browseURL()
-}
-
-selection_path <- function() {
-  doc <- rstudioapi::getSourceEditorContext()
-  range <- rstudioapi::primary_selection(doc$selection)$range %>%
-    rstudioapi::as.document_range()
-
-  start <- range$start[[1]]
-  end <- range$end[[1]]
-
-  absolute_project_path <- paste0(here::here(), .Platform$file.sep)
-  absolute_file_path <- path.expand(doc$path)
-
-  relative_file_path <- stringr::str_remove(absolute_file_path, absolute_project_path)
-
-  paste0(relative_file_path, "#L", start, "-L", end)
 }
