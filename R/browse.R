@@ -62,7 +62,7 @@ browse <- function(path = NULL) {
 
 selection_path <- function() {
   doc <- rstudioapi::getSourceEditorContext()
-  range <- rstudioapi::primary_selection(doc$selection) %>%
+  range <- rstudioapi::primary_selection(doc$selection)$range %>%
     rstudioapi::as.document_range()
 
   start <- range$start[[1]]
@@ -73,5 +73,5 @@ selection_path <- function() {
 
   relative_file_path <- stringr::str_remove(absolute_file_path, absolute_project_path)
 
-  paste0(relative_file_path, "#L", start, "-", end)
+  paste0(relative_file_path, "#L", start, "-L", end)
 }
