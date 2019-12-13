@@ -7,8 +7,8 @@
 
 <!-- badges: end -->
 
-browse makes it easy to open Github links from RStudio. Try `Browse to
-remote file` addin while highlighting text in a file.
+browse makes it easy to open Github links from RStudio. Try the `Browse
+to remote file` addin while highlighting text in a file.
 
 ![](browse.gif)
 
@@ -28,9 +28,10 @@ You can also use
 browse::browse()
 ```
 
-in the console and outside of RStudio.
+in the console.
 
-You can also use the relative file path:
+Outside of RStudio, you can also use the relative file path to open the
+file on Github:
 
 ``` r
 browse("R/browse.R#L6-L9")
@@ -38,11 +39,11 @@ browse("R/browse.R#L6")
 browse("R/browse.R")
 ```
 
-Or just get the link to share with others:
+Or you can quickly get the link to share with others:
 
 ``` r
 browse::link("R/browse.R")
-#> [1] "https://github.com/tmastny/browse/blob/2c0aa40d329ada52a57f9c7b559d5da4c30410ed/R/browse.R"
+#> [1] "https://github.com/tmastny/browse/blob/0b349e84336805bcc7e1c4c3d60814e305f77bb4/R/browse.R"
 #> attr(,"class")
 #> [1] "browse_link" "character"
 ```
