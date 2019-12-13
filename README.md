@@ -42,7 +42,7 @@ Or just get the link to share with others:
 
 ``` r
 browse::link("R/browse.R")
-#> [1] "https://github.com/tmastny/browse/blob/24bca87f6127b6a401b6da00cc53906f198d236e/R/browse.R"
+#> [1] "https://github.com/tmastny/browse/blob/428ed4c2dc6ba528e4bdcfcea7811b732a2a2319/R/browse.R"
 #> attr(,"class")
 #> [1] "browse_link" "character"
 ```
