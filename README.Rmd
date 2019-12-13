@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-browse makes it easy to open Github links from RStudio. 
+browse makes it easy to open files in Github from RStudio. 
 Try the `Browse to remote file` addin while highlighting text in a file.
 
 ![](browse.gif)
@@ -41,7 +41,7 @@ browse::browse()
 
 in the console.
 
-Outside of RStudio, you can also use the relative file path
+Outside of RStudio, you can use the relative file path
 to open the file on Github:
 
 ```r
