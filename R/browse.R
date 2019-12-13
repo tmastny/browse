@@ -38,8 +38,11 @@ print.github_url <- function(x, ...) {
 
 #' Opens URL in Default Browser
 #'
+#' @description
 #' Takes a file path (with option line numbers) and opens the corresponding
 #' Github permalink in your default browser.
+#'
+#' The default, \code{path = NULL} works on a RStudio selection.
 #'
 #' @examples
 #' \dontrun{
