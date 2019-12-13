@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of browse is to ...
+browse makes it easy to open Github links from RStudio.
 
 ## Installation
 

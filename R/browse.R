@@ -41,9 +41,37 @@ print.github_url <- function(x, ...) {
 #' Takes a file path (with option line numbers) and opens the corresponding
 #' Github permalink in your default browser.
 #'
+#' @examples
+#' \dontrun{
+#' browse("R/browse.R#L6-L9")
+#' browse("R/browse.R#L6")
+#'
+#' browse("R/browse.R")
+#' }
+#'
 #' @inheritParams github_url
 #' @export
-browse <- function(path) {
+browse <- function(path = NULL) {
+  if (is.null(path)) {
+    path <- selection_path()
+  }
+
   github_url(path) %>%
     browseURL()
+}
+
+selection_path <- function() {
+  doc <- rstudioapi::getSourceEditorContext()
+  range <- rstudioapi::primary_selection(doc$selection) %>%
+    rstudioapi::as.document_range()
+
+  start <- range$start[[1]]
+  end <- range$end[[1]]
+
+  absolute_project_path <- paste0(here::here(), .Platform$file.sep)
+  absolute_file_path <- path.expand(doc$path)
+
+  relative_file_path <- stringr::str_remove(absolute_file_path, absolute_project_path)
+
+  paste0(relative_file_path, "#L", start, "-", end)
 }
