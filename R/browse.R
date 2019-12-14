@@ -21,35 +21,46 @@ link_addin <- function() {
 #' # works on RStudio selection
 #' link()
 #'
-#' # opens URL in default browser
-#' \dontrun{
-#' link("R/install.R") %>%
-#'   browseURL()
-#' }
-#'
 #' @export
 link <- function(path = NULL, remote = "origin") {
   if (is.null(path)) {
     path <- selection_path()
   }
 
-  current_remote_sha_url(remote) %>%
-    add_path_to_url(path)
+  remote_repo(remote) %>%
+    craft_url(path)
 }
 
-add_path_to_url <- function(url, path) {
-  UseMethod("add_path_to_url")
+craft_url <- function(repo, path) {
+  UseMethod("craft_url")
 }
 
-add_path_to_url.default <- function(url, path) {
-  paste0(url, path$path, "#L", path$start, "-L", path$end)
+craft_url.default <- function(repo, path) {
+  stop(class(repo), " is not supported.")
 }
 
-add_path_to_url.gitlab <- function(url, path) {
-  paste0(url, path$path, "#L", path$start)
+craft_url.github <- function(repo, path) {
+  paste0(
+    "https://github.com/", repo$owner, "/", repo$name, "/blob/", repo$sha, "/",
+    path$path, "#L", path$start, "-L", path$end
+  )
 }
 
-current_remote_sha_url <- function(remote) {
+craft_url.gitlab <- function(repo, path) {
+  paste0(
+    "https://gitlab.com/", repo$owner, "/", repo$name, "/blob/", repo$sha, "/",
+    path$path, "#L", path$start
+  )
+}
+
+craft_url.bitbucket <- function(repo, path) {
+  paste0(
+    "https://bitbucket.org/", repo$owner, "/", repo$name, "/src/", repo$sha, "/",
+    path$path, "#lines-", path$start
+  )
+}
+
+remote_repo <- function(remote) {
   if (!is.null(getOption("browse.remote.default"))) {
     remote <- getOption("browse.remote.default")
   }
@@ -62,13 +73,17 @@ current_remote_sha_url <- function(remote) {
   commit <- git2r::lookup_commit(head) %>%
     as.data.frame()
 
-  repo_sha_url <- paste0(repo_url, "/blob/", commit$sha, "/")
+  owner <- repo_url %>%
+    urltools::path() %>%
+    stringr::str_split("/")
 
-  class(repo_sha_url) <- urltools::domain(repo_sha_url) %>%
+  repo_data <- list(owner = owner[[1]][1], name = owner[[1]][2], sha = commit$sha)
+
+  class(repo_data) <- urltools::domain(repo_url) %>%
     urltools::suffix_extract() %>%
     .$domain
 
-  repo_sha_url
+  repo_data
 }
 
 selection_path <- function(url, path) {
@@ -105,6 +120,6 @@ selection_path <- function(url, path) {
 #' @inheritParams link
 #' @export
 browse <- function(path = NULL, remote = "origin") {
-  link(path) %>%
+  link(path, remote = remote) %>%
     browseURL()
 }
