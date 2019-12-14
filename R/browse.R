@@ -98,7 +98,7 @@ remote_repo <- function(remote) {
   )
 }
 
-selection_path <- function(url, path) {
+selection_path <- function() {
   doc <- rstudioapi::getSourceEditorContext()
   range <- rstudioapi::primary_selection(doc$selection)$range %>%
     rstudioapi::as.document_range()
