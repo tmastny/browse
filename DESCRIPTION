@@ -1,13 +1,15 @@
 Package: browse
-Title: What the Package Does (One Line, Title Case)
+Title: Navigate to Files in Remote Git Repos
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Timothy",
+           family = "Mastny",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
+           email = "tim.mastny@gmail.com",
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description: browse provides tools to automatically navigate from R to remote
+    files on Git repos. browse also includes RStudio addins to quickly browse
+    to the remote Git repo right from the RStudio text editor.
 License: MIT + file LICENSE
 Suggests: 
     testthat
