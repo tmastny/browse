@@ -20,6 +20,8 @@ You can install the browse with:
 devtools::install_github("tmastny/browse")
 ```
 
+Now supports Bitbucket and Gitlab\!
+
 ## Examples
 
 You can also use
@@ -43,7 +45,5 @@ Or you can quickly get the link to share with others:
 
 ``` r
 browse::link("R/browse.R")
-#> [1] "https://github.com/tmastny/browse/blob/c064a6eedbee7af216f3472a97eeb8b2c3afeff6/R/browse.R"
-#> attr(,"class")
-#> [1] "browse_link" "character"
+#> [1] "https://github.com/tmastny/browse/blob/e1cf34e8a8ec6de2e0f675602c198ce206fa44de/R/browse.R"
 ```

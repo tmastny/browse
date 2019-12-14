@@ -31,6 +31,8 @@ You can install the browse with:
 devtools::install_github("tmastny/browse")
 ```
 
+Now supports Bitbucket and Gitlab!
+
 ## Examples
 
 You can also use 
