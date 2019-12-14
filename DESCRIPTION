@@ -12,7 +12,7 @@ Description: browse provides tools to automatically navigate from R to remote
     to the remote Git repo right from the RStudio text editor.
 License: MIT + file LICENSE
 Suggests: 
-    testthat
+    testthat (>= 2.1.0)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
@@ -22,4 +22,5 @@ Imports:
     git2r,
     magrittr,
     here,
-    urltools
+    urltools,
+    rstudioapi

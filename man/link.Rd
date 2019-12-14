@@ -19,10 +19,12 @@ Creates a Github permalink based on the repo in the current working directory.
 Uses the current HEAD of the git repo.
 }
 \examples{
+\dontrun{
 link("R/browse.R#L6-L9")
 link("R/browse.R#L6")
 
 # works on a RStudio selection
 link()
+}
 
 }

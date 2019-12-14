@@ -15,11 +15,13 @@ link_addin <- function() {
 #' \code{options(browse.remote.default = "remote_name")}.
 #'
 #' @examples
+#' \dontrun{
 #' link("R/browse.R#L6-L9")
 #' link("R/browse.R#L6")
 #'
 #' # works on a RStudio selection
 #' link()
+#' }
 #'
 #' @export
 link <- function(path = NULL, remote = "origin") {
@@ -137,5 +139,5 @@ selection_path <- function() {
 #' @export
 browse <- function(path = NULL, remote = "origin") {
   link(path, remote = remote) %>%
-    browseURL()
+    utils::browseURL()
 }
