@@ -18,7 +18,7 @@ link_addin <- function() {
 #' link("R/browse.R#L6-L9")
 #' link("R/browse.R#L6")
 #'
-#' # works on RStudio selection
+#' # works on a RStudio selection
 #' link()
 #'
 #' @export
@@ -28,35 +28,44 @@ link <- function(path = NULL, remote = "origin") {
   }
 
   remote_repo(remote) %>%
-    craft_url(path)
+    remote_url() %>%
+    add_path_to_url(path)
 }
 
-craft_url <- function(repo, path) {
-  UseMethod("craft_url")
-}
+add_path_to_url <- function(url, path) {
+  if (is.character(path)) {
+    return(paste0(url$url, path))
+  }
 
-craft_url.default <- function(repo, path) {
-  stop(class(repo), " is not supported.")
-}
-
-craft_url.github <- function(repo, path) {
-  paste0(
-    "https://github.com/", repo$owner, "/", repo$name, "/blob/", repo$sha, "/",
-    path$path, "#L", path$start, "-L", path$end
+  switch(
+    url$domain,
+    github = paste0(url$url, path$path, "#L", path$start, "-L", path$end),
+    gitlab = paste0(url$url, path$path, "#L", path$start),
+    bitbucket = paste0(url$url, path$path, "#lines-", path$start)
   )
 }
 
-craft_url.gitlab <- function(repo, path) {
-  paste0(
-    "https://gitlab.com/", repo$owner, "/", repo$name, "/blob/", repo$sha, "/",
-    path$path, "#L", path$start
+remote_url <- function(repo) {
+  web_ext <- list(
+    github = ".com",
+    gitlab = ".com",
+    bitbucket = ".org"
   )
-}
 
-craft_url.bitbucket <- function(repo, path) {
-  paste0(
-    "https://bitbucket.org/", repo$owner, "/", repo$name, "/src/", repo$sha, "/",
-    path$path, "#lines-", path$start
+  web_src <- list(
+    github = "blob",
+    gitlab = "blob",
+    bitbucket = "src"
+  )
+
+  stopifnot(repo$domain %in% names(web_ext))
+
+  list(
+    domain = repo$domain,
+    url = paste0(
+      "https://", repo$domain, web_ext[[repo$domain]],  "/",
+      repo$owner, "/", repo$name, "/", web_src[[repo$domain]], "/", repo$sha, "/"
+    )
   )
 }
 
@@ -77,13 +86,16 @@ remote_repo <- function(remote) {
     urltools::path() %>%
     stringr::str_split("/")
 
-  repo_data <- list(owner = owner[[1]][1], name = owner[[1]][2], sha = commit$sha)
-
-  class(repo_data) <- urltools::domain(repo_url) %>%
+  domain <- urltools::domain(repo_url) %>%
     urltools::suffix_extract() %>%
     .$domain
 
-  repo_data
+  list(
+    domain = domain,
+    owner = owner[[1]][1],
+    name = owner[[1]][2],
+    sha = commit$sha
+  )
 }
 
 selection_path <- function(url, path) {
@@ -115,6 +127,10 @@ selection_path <- function(url, path) {
 #' browse("R/browse.R#L6")
 #'
 #' browse("R/browse.R")
+#'
+#' # works on an RStudio selection
+#' browse()
+#'
 #' }
 #'
 #' @inheritParams link

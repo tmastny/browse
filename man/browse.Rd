@@ -4,11 +4,15 @@
 \alias{browse}
 \title{Opens Github File in Default Browser}
 \usage{
-browse(path = NULL)
+browse(path = NULL, remote = "origin")
 }
 \arguments{
 \item{path}{The relative path of the file from the top of the git repo.
 The default, \code{path = NULL} works on a RStudio selection.}
+
+\item{remote}{Name of the remote to link to.
+Optionally, you can change by setting
+\code{options(browse.remote.default = "remote_name")}.}
 }
 \description{
 Takes a relative file path (with option line numbers)
@@ -20,6 +24,10 @@ browse("R/browse.R#L6-L9")
 browse("R/browse.R#L6")
 
 browse("R/browse.R")
+
+# works on an RStudio selection
+browse()
+
 }
 
 }

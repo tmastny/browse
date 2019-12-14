@@ -4,11 +4,15 @@
 \alias{link}
 \title{Link to Remote File}
 \usage{
-link(path = NULL)
+link(path = NULL, remote = "origin")
 }
 \arguments{
 \item{path}{The relative path of the file from the top of the git repo.
 The default, \code{path = NULL} works on a RStudio selection.}
+
+\item{remote}{Name of the remote to link to.
+Optionally, you can change by setting
+\code{options(browse.remote.default = "remote_name")}.}
 }
 \description{
 Creates a Github permalink based on the repo in the current working directory.
@@ -18,13 +22,7 @@ Uses the current HEAD of the git repo.
 link("R/browse.R#L6-L9")
 link("R/browse.R#L6")
 
-# works on RStudio selection
+# works on a RStudio selection
 link()
-
-# opens URL in default browser
-\dontrun{
-link("R/install.R") \%>\%
-  browseURL()
-}
 
 }
