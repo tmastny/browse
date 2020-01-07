@@ -134,7 +134,7 @@ remote_repo <- function(remote) {
   c(remote_data, list(sha = commit$sha))
 }
 
-selection_path <- function(url, path) {
+selection_path <- function() {
   doc <- rstudioapi::getSourceEditorContext()
   range <- rstudioapi::primary_selection(doc$selection)$range %>%
     rstudioapi::as.document_range()
