@@ -71,36 +71,70 @@ remote_url <- function(repo) {
   )
 }
 
+strip_git_ext <- function(url) {
+  stringr::str_sub(url, end = -5)
+}
+
+parse_ssh_url <- function(url) {
+  components <- url %>%
+    stringr::str_split(":")
+
+  shh_components <- components[[1]][1] %>%
+    stringr::str_split("@")
+
+  domain <- shh_components[[1]][2] %>%
+    urltools::suffix_extract() %>%
+    .$domain
+
+  repo <- components[[1]][2] %>%
+    stringr::str_split("/")
+
+  list(
+    domain = domain,
+    owner = repo[[1]][1],
+    name = repo[[1]][2]
+  )
+}
+
+parse_remote_url <- function(url) {
+  url <- strip_git_ext(url)
+  if (stringr::str_detect(url, "@")) {
+    return(parse_ssh_url(url))
+  }
+
+  url_components <- urltools::url_parse(url)
+
+  domain <- url_components$domain %>%
+    urltools::suffix_extract() %>%
+    .$domain
+
+  repo <- url_components$path %>%
+    stringr::str_split("/")
+
+  list(
+    domain = domain,
+    owner = repo[[1]][1],
+    name = repo[[1]][2]
+  )
+}
+
 remote_repo <- function(remote) {
   if (!is.null(getOption("browse.remote.default"))) {
     remote <- getOption("browse.remote.default")
   }
 
-  repo_url <- git2r::remote_url(remote = remote) %>%
-    stringr::str_sub(end = -5)
+  remote_data <- git2r::remote_url(remote = remote) %>%
+    parse_remote_url()
 
   head <- git2r::repository_head()
 
   commit <- git2r::lookup_commit(head) %>%
     as.data.frame()
 
-  owner <- repo_url %>%
-    urltools::path() %>%
-    stringr::str_split("/")
-
-  domain <- urltools::domain(repo_url) %>%
-    urltools::suffix_extract() %>%
-    .$domain
-
-  list(
-    domain = domain,
-    owner = owner[[1]][1],
-    name = owner[[1]][2],
-    sha = commit$sha
-  )
+  c(remote_data, list(sha = commit$sha))
 }
 
-selection_path <- function() {
+selection_path <- function(url, path) {
   doc <- rstudioapi::getSourceEditorContext()
   range <- rstudioapi::primary_selection(doc$selection)$range %>%
     rstudioapi::as.document_range()
