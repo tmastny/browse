@@ -1,9 +1,9 @@
 Name: Browse to remote file
-Description: Opens browser to current selection on Github.
+Description: Opens browser to the current selection on Github/Gitlab/Bitbucket.
 Binding: browse
 Interactive: false
 
 Name: Link to remote file
-Description: Returns the link to current selection on Github
+Description: Copies the Github/Gitlab/Bitbucket link to the current selection.
 Binding: link
 Interactive: false
