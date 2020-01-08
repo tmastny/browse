@@ -1,7 +1,3 @@
-link_addin <- function() {
-  rstudioapi::sendToConsole(link(), execute = FALSE)
-}
-
 #' Link to Remote File
 #'
 #' Creates a Github permalink based on the repo in the current working directory.
@@ -29,9 +25,13 @@ link <- function(path = NULL, remote = "origin") {
     path <- selection_path()
   }
 
-  remote_repo(remote) %>%
+  url <- remote_repo(remote) %>%
     remote_url() %>%
     add_path_to_url(path)
+
+  add_to_clipboard(url)
+
+  invisible(url)
 }
 
 add_path_to_url <- function(url, path) {
@@ -172,6 +172,8 @@ selection_path <- function() {
 #' @inheritParams link
 #' @export
 browse <- function(path = NULL, remote = "origin") {
-  link(path, remote = remote) %>%
+  url <- link(path, remote = remote) %>%
     utils::browseURL()
+
+  invisible(url)
 }
