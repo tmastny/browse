@@ -23,7 +23,7 @@ add_to_clipboard <- function(url) {
   } else if (interactive()) {
     clipr::dr_clipr()
     message(
-      "Unable to put result on the clipboard. Try to ",
+      "Unable to put link on the clipboard. Try to ",
       "capture what `link()` or `browse()` returns."
     )
   }
