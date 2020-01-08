@@ -5,5 +5,5 @@ Interactive: false
 
 Name: Link to remote file
 Description: Returns the link to current selection on Github
-Binding: link_addin
+Binding: link
 Interactive: false
