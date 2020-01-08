@@ -12,15 +12,19 @@ browse makes it easy to open files in Github from RStudio. Try the
 
 ![](browse.gif)
 
+Alternatively, use `Link to remote file` to automatically copy the url
+to your clipboard. This makes it easy to share links in Slack, Github,
+and Twitter\!
+
 ## Installation
 
-You can install the browse with:
+You can install browse with:
 
 ``` r
 devtools::install_github("tmastny/browse")
 ```
 
-Now supports Bitbucket and Gitlab\!
+`browse` now supports Bitbucket and Gitlab.
 
 ## Examples
 
@@ -28,22 +32,16 @@ You can also use
 
 ``` r
 browse::browse()
+browse::link()
 ```
 
-in the console.
+in the RStudio console.
 
-Outside of RStudio, you can use the relative file path to open the file
-on Github:
+Outside of RStudio, you can use the relative file path to open the
+remote file:
 
 ``` r
 browse("R/browse.R#L6-L9")
 browse("R/browse.R#L6")
 browse("R/browse.R")
-```
-
-Or you can quickly get the link to share with others:
-
-``` r
-browse::link("R/browse.R")
-#> [1] "https://github.com/tmastny/browse/blob/e1cf34e8a8ec6de2e0f675602c198ce206fa44de/R/browse.R"
 ```
