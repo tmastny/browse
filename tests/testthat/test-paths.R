@@ -18,6 +18,21 @@ test_that("adding a path works", {
   #
   #   This indicates `#` might be illegal in file names which would help:
   #   https://www.mtu.edu/umc/services/digital/writing/characters-avoid/
+  #
+  #   - this is a little tricky with the current implementation, since
+  #     I simply check if the path object is a character string.
+  #
+  #     If I split the string on `#`, I would need both parts:
+  #     the absolute url to check for the remote url.
+  #
+  #     Then the relative url (with L5 or L5-L5) to create the link.
+  #     I would need to add some condition log on the split to see if
+  #     i have a start (L5) or a start or end (L5-L5) if I wanted to parse it
+  #     out. I could simply take it as is, but then I the object I have
+  #     created would need to change.
+  #
+  #     I would need a new absolute path function that did the split a
+  #     automatically.
 
   test_path_selection <- list(
     path = "R/browse.R",
