@@ -25,4 +25,5 @@ Imports:
     here,
     urltools,
     rstudioapi,
-    clipr
+    clipr,
+    tools

@@ -49,38 +49,49 @@ browse <- function(path = NULL, remote = "origin") {
 #'
 #' @export
 link <- function(path = NULL, remote = "origin") {
-  if (is.null(path)) {
-    path <- selection_path()
-  }
 
-  url <- remote_repo(remote) %>%
+  path_data <- file_location(path)
+
+  url <- tools::file_path_as_absolute(path) %>%
+    git2r::workdir() %>%
+    remote_repo(remote) %>%
     remote_url() %>%
-    add_path_to_url(path)
+    add_path_to_url(path_data)
 
   add_to_clipboard(url)
 
   invisible(url)
 }
 
-selection_path <- function() {
-  doc <- rstudioapi::getSourceEditorContext()
-  range <- rstudioapi::primary_selection(doc$selection)$range %>%
-    rstudioapi::as.document_range()
+file_location <- function(path) {
+  start <- NULL
+  end <- NULL
 
-  start <- range$start[[1]]
-  end <- range$end[[1]]
+  if (is.null(path)) {
+    doc <- rstudioapi::getSourceEditorContext()
+    range <- rstudioapi::primary_selection(doc$selection)$range %>%
+      rstudioapi::as.document_range()
 
+    start <- range$start[[1]]
+    end <- range$end[[1]]
+
+    path <- path.expand(doc$path)
+  }
+
+  absolute_path <- tools::file_path_as_absolute(path)
+
+  list(path = relative_path(absolute_path), start = start, end = end)
+}
+
+relative_path <- function(absolute_path, start, end) {
   absolute_project_path <- paste0(here::here(), .Platform$file.sep)
-  absolute_file_path <- path.expand(doc$path)
 
-  relative_file_path <- stringr::str_remove(absolute_file_path, absolute_project_path)
-
-  list(path = relative_file_path, start = start, end = end)
+  stringr::str_remove(absolute_path, absolute_project_path)
 }
 
 add_path_to_url <- function(url, path) {
-  if (is.character(path)) {
-    return(paste0(url$url, path))
+  if (is.null(path$start) & is.null(path$end)) {
+    return(paste0(url$url, path$path))
   }
 
   switch(
@@ -162,15 +173,15 @@ parse_remote_url <- function(url) {
   )
 }
 
-remote_repo <- function(remote) {
+remote_repo <- function(repo, remote) {
   if (!is.null(getOption("browse.remote.default"))) {
     remote <- getOption("browse.remote.default")
   }
 
-  remote_data <- git2r::remote_url(remote = remote) %>%
+  remote_data <- git2r::remote_url(repo, remote) %>%
     parse_remote_url()
 
-  head <- git2r::repository_head()
+  head <- git2r::repository_head(repo)
 
   commit <- git2r::lookup_commit(head) %>%
     as.data.frame()
