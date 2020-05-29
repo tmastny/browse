@@ -75,10 +75,12 @@ file_location <- function(path) {
     start <- range$start[[1]]
     end <- range$end[[1]]
 
-    path <- path.expand(doc$path)
+    path <- doc$path
   }
 
-  absolute_path <- tools::file_path_as_absolute(path)
+
+  absolute_path <- path.expand(path) %>%
+    tools::file_path_as_absolute()
 
   list(path = relative_path(absolute_path), start = start, end = end)
 }
