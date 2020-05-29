@@ -1,3 +1,31 @@
+#' Opens Github File in Default Browser
+#'
+#' @description
+#' Takes a relative file path (with option line numbers)
+#' and opens the corresponding Github permalink in your default browser.
+#'
+#'
+#' @examples
+#' \dontrun{
+#' browse("R/browse.R#L6-L9")
+#' browse("R/browse.R#L6")
+#'
+#' browse("R/browse.R")
+#'
+#' # works on an RStudio selection
+#' browse()
+#'
+#' }
+#'
+#' @inheritParams link
+#' @export
+browse <- function(path = NULL, remote = "origin") {
+  url <- link(path, remote = remote) %>%
+    utils::browseURL()
+
+  invisible(url)
+}
+
 #' Link to Remote File
 #'
 #' Creates a Github permalink based on the repo in the current working directory.
@@ -32,6 +60,22 @@ link <- function(path = NULL, remote = "origin") {
   add_to_clipboard(url)
 
   invisible(url)
+}
+
+selection_path <- function() {
+  doc <- rstudioapi::getSourceEditorContext()
+  range <- rstudioapi::primary_selection(doc$selection)$range %>%
+    rstudioapi::as.document_range()
+
+  start <- range$start[[1]]
+  end <- range$end[[1]]
+
+  absolute_project_path <- paste0(here::here(), .Platform$file.sep)
+  absolute_file_path <- path.expand(doc$path)
+
+  relative_file_path <- stringr::str_remove(absolute_file_path, absolute_project_path)
+
+  list(path = relative_file_path, start = start, end = end)
 }
 
 add_path_to_url <- function(url, path) {
@@ -132,48 +176,4 @@ remote_repo <- function(remote) {
     as.data.frame()
 
   c(remote_data, list(sha = commit$sha))
-}
-
-selection_path <- function() {
-  doc <- rstudioapi::getSourceEditorContext()
-  range <- rstudioapi::primary_selection(doc$selection)$range %>%
-    rstudioapi::as.document_range()
-
-  start <- range$start[[1]]
-  end <- range$end[[1]]
-
-  absolute_project_path <- paste0(here::here(), .Platform$file.sep)
-  absolute_file_path <- path.expand(doc$path)
-
-  relative_file_path <- stringr::str_remove(absolute_file_path, absolute_project_path)
-
-  list(path = relative_file_path, start = start, end = end)
-}
-
-#' Opens Github File in Default Browser
-#'
-#' @description
-#' Takes a relative file path (with option line numbers)
-#' and opens the corresponding Github permalink in your default browser.
-#'
-#'
-#' @examples
-#' \dontrun{
-#' browse("R/browse.R#L6-L9")
-#' browse("R/browse.R#L6")
-#'
-#' browse("R/browse.R")
-#'
-#' # works on an RStudio selection
-#' browse()
-#'
-#' }
-#'
-#' @inheritParams link
-#' @export
-browse <- function(path = NULL, remote = "origin") {
-  url <- link(path, remote = remote) %>%
-    utils::browseURL()
-
-  invisible(url)
 }
