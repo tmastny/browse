@@ -5,3 +5,5 @@
 ^cran-comments\.md$
 ^\.github$
 ^browse\.gif$
+^browse2\.gif$
+^asciicast-browse\.R$

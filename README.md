@@ -38,9 +38,13 @@ browse::link()
 in the RStudio console to browse to the file and line where your cursor
 is in the editor.
 
-And inside and outside RStudio, you can always browse to a file using a
-relative path from your working directory, or an absolute path. The file
-can even be in another git repo.
+And inside and outside RStudio, it also works as a command-line tool:
+
+![](browse2.gif)
+
+, you can always browse to a file using a relative path from your
+working directory, or an absolute path. The file can even be in another
+git repo.
 
 ``` r
 # working directory is the top level of repo
