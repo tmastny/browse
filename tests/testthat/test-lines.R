@@ -1,6 +1,6 @@
 test_that("correct link is returned when using a manual line numbers", {
 
-  actual_url <- current_commit_url("#L46-L46")
+  actual_url <- current_commit_url(lines = "#L46-L46")
   browse_link <- with_dir(here::here(), link("R/browse.R#L46-L46"))
 
   expect_equal(actual_url, browse_link)
