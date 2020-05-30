@@ -1,23 +1,45 @@
-#' Opens Github File in Default Browser
+#' Navigate and Link to Remote Git Files
 #'
 #' @description
-#' Takes a relative file path (with option line numbers)
-#' and opens the corresponding Github permalink in your default browser.
+#' \code{link} creates a permalink to the remote file and copies it to your
+#' clipboard for easy sharing. This permalink is based on the HEAD commit
+#' of the local git repo.
 #'
+#' \code{browse} does the same thing, but also opens the website in your default
+#' web browser.
+#'
+#' Works with Github, Gitlab, and Bitbucket repos.
+#'
+#' @details
+#' In the \code{path} argument, you can optionally include line numbers after
+#' the path to the file. See the examples section below. Formatting varies
+#' between Github, Gitlab, and Bitbucket.
+#'
+#' @param path path to the file. The path may be relative to the current
+#' working directory, or an absolute path.
+#' The default, \code{path = NULL} works on a RStudio editor selection.
+#'
+#' @param remote Name of the remote to link to.
+#' Optionally, you can change by setting
+#' \code{options(browse.remote.default = "remote_name")}.
 #'
 #' @examples
 #' \dontrun{
-#' browse("R/browse.R#L6-L9")
-#' browse("R/browse.R#L6")
-#'
-#' browse("R/browse.R")
-#'
-#' # works on an RStudio selection
+#' # works on an RStudio selection in the editor
 #' browse()
+#' link()
 #'
+#' # working directory is the top level of repo
+#' browse("R/browse.R")
+#' link("R/browse.R#L6-L9")
+#'
+#' # working directory is the R/ folder of repo
+#' link("../README.md")
+#'
+#' # relative or absolute paths to other repos
+#' browse("~/rpackages/dplyr/DESCRIPTION")
 #' }
 #'
-#' @inheritParams link
 #' @export
 browse <- function(path = NULL, remote = "origin") {
   url <- link(path, remote = remote) %>%
@@ -26,27 +48,7 @@ browse <- function(path = NULL, remote = "origin") {
   invisible(url)
 }
 
-#' Link to Remote File
-#'
-#' Creates a Github permalink based on the repo in the current working directory.
-#' Uses the current HEAD of the git repo.
-#'
-#' @param path The relative path of the file from the top of the git repo.
-#' The default, \code{path = NULL} works on a RStudio selection.
-#'
-#' @param remote Name of the remote to link to.
-#' Optionally, you can change by setting
-#' \code{options(browse.remote.default = "remote_name")}.
-#'
-#' @examples
-#' \dontrun{
-#' link("R/browse.R#L6-L9")
-#' link("R/browse.R#L6")
-#'
-#' # works on a RStudio selection
-#' link()
-#' }
-#'
+#' @rdname browse
 #' @export
 link <- function(path = NULL, remote = "origin") {
 
