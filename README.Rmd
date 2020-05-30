@@ -63,5 +63,3 @@ browse("../README.md")
 # relative or absolute paths to other repos
 browse("~/rpackages/dplyr/DESCRIPTION")
 ```
-
-
