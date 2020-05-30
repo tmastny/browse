@@ -1,15 +1,31 @@
-test_that("correct link is returned when using a manual line numbers", {
+test_that("correct link is returned from various working directories", {
 
-  actual_url <- current_commit_url("#L46-L46")
-  browse_link <- with_dir(here::here(), link("R/browse.R#L46-L46"))
+  skip_if(not_git_repo)
 
-  expect_equal(actual_url, browse_link)
+
+  actual_url <- current_commit_url()
+
+  link_at_top_level <- with_dir(here::here(), link("R/browse.R"))
+  link_in_directory <- with_dir(here::here("R"), link("browse.R"))
+
+  absolute_path_to_file <- here::here("R", "browse.R")
+
+  link_outside_repo <- with_dir(tempdir(), link(absolute_path_to_file))
+
+  expect_equal(actual_url, link_at_top_level)
+  expect_equal(actual_url, link_in_directory)
+  expect_equal(actual_url, link_outside_repo)
 })
 
-test_that("line numbers are parsed correctly for domain", {
+test_that("correct link is returned when using a tilde", {
 
-  github_line_numbers <- "#L46-L46"
-  lines <- list(start = 46, end = 46)
+  skip_if(not_git_repo)
+  skip_if(no_tilde_dir)
+  skip_if_not(file_exists)
 
-  expect_equal(github_line_numbers, parse_lines(lines, domain = "github.com"))
+  actual_url <- current_commit_url()
+
+  link_with_tilde <- link("~/rpackages/browse/R/browse.R")
+
+  expect_equal(actual_url, link_with_tilde)
 })
