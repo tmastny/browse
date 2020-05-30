@@ -35,13 +35,21 @@ browse::browse()
 browse::link()
 ```
 
-in the RStudio console.
+in the RStudio console to browse to the file and line where your cursor
+is in the editor.
 
-Outside of RStudio, you can use the relative file path to open the
-remote file:
+And inside and outside RStudio, you can always browse to a file using a
+relative path from your working directory, or an absolute path. The file
+can even be in another git repo.
 
 ``` r
-browse("R/browse.R#L6-L9")
-browse("R/browse.R#L6")
+# working directory is the top level of repo
 browse("R/browse.R")
+browse("R/browse.R#L6-L9")
+
+# working directory is the R/ folder of repo
+browse("../README.md")
+
+# relative or absolute paths to other repos
+browse("~/rpackages/dplyr/DESCRIPTION")
 ```
