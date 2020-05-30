@@ -1,4 +1,4 @@
-test_that("different file paths return the same link", {
+test_that("correct link is returned from various working directories", {
 
   skip_if(not_git_repo)
 
@@ -17,7 +17,7 @@ test_that("different file paths return the same link", {
   expect_equal(actual_url, link_outside_repo)
 })
 
-test_that("tilde file paths return the same link", {
+test_that("correct link is returned when using a tilde", {
 
   skip_if(not_git_repo)
   skip_if(no_tilde_dir)

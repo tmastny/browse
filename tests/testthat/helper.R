@@ -1,11 +1,11 @@
 library(withr)
 
-current_commit_url <- function() {
+current_commit_url <- function(lines = "") {
   sha <- git2r::last_commit() %>% .$sha
 
   paste0(
     "https://github.com/tmastny/browse/blob/",
-    sha, "/R/browse.R"
+    sha, "/R/browse.R", lines
   )
 }
 

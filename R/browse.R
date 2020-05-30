@@ -111,7 +111,7 @@ add_file_path_to_url <- function(url, path) {
 }
 
 add_lines_to_url <- function(url, lines) {
-  paste0(url, parse_lines(lines, urltools::domain(url)))
+  paste0(url, parse_lines(lines, domain = urltools::domain(url)))
 }
 
 parse_lines <- function(lines, ...) {
@@ -128,10 +128,10 @@ parse_lines.character <- function(lines, ...) {
 
 parse_lines.list <- function(lines, ...) {
   switch(
-    list(...)$domain,
-    github.com = paste0(url, "#L", lines$start, "-L", lines$end),
-    gitlab.com = paste0(url, "#L", lines$start),
-    bitbucket.org = paste0(ur, "#lines-", lines$start)
+    list(...)[["domain"]],
+    github.com = paste0("#L", lines$start, "-L", lines$end),
+    gitlab.com = paste0("#L", lines$start),
+    bitbucket.org = paste0("#lines-", lines$start)
   )
 }
 

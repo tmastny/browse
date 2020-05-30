@@ -1,20 +1,15 @@
-test_that("adding a path works", {
+test_that("correct link is returned when using a manual line numbers", {
 
-  actual_url <- "https://github.com/tmastny/browse/blob/b03704441535c5c5581da4be2c576c73f4d7d75e/R/browse.R#L46-L46"
+  actual_url <- current_commit_url("#L46-L46")
+  browse_link <- with_dir(here::here(), link("R/browse.R#L46-L46"))
 
-  test_rstudio_selection <- list(
-    path = "R/browse.R",
-    start = 46,
-    end = 46
-  )
+  expect_equal(actual_url, browse_link)
+})
 
-  test_path_manual <- list(
-    path = "R/browse.R#L46-L46",
-    start = NULL,
-    end = NULL
-  )
+test_that("line numbers are parsed correctly for domain", {
 
-  expect_equal(actual_url, add_path_to_url(mock_url_object, test_path_selection))
-  expect_equal(actual_url, add_path_to_url(mock_url_object, test_path_manual))
-  expect_equal(actual_url, link("R/browse.R#L46-L46"))
+  github_line_numbers <- "#L46-L46"
+  lines <- list(start = 46, end = 46)
+
+  expect_equal(github_line_numbers, parse_lines(lines, domain = "github.com"))
 })
