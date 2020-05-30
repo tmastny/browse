@@ -1,5 +1,7 @@
 test_that("correct link is returned when using a manual line numbers", {
 
+  skip_if(not_git_repo)
+
   actual_url <- current_commit_url(lines = "#L46-L46")
   browse_link <- with_dir(here::here(), link("R/browse.R#L46-L46"))
 
