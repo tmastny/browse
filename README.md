@@ -42,9 +42,8 @@ And inside and outside RStudio, it also works as a command-line tool:
 
 ![](browse2.gif)
 
-, you can always browse to a file using a relative path from your
-working directory, or an absolute path. The file can even be in another
-git repo.
+You can use a relative path from your working directory, or an absolute
+path, as long as the file is in a git repo.
 
 ``` r
 # working directory is the top level of repo
