@@ -50,57 +50,88 @@ browse <- function(path = NULL, remote = "origin") {
 #' @export
 link <- function(path = NULL, remote = "origin") {
 
-  path_data <- file_location(path)
+  path_lines <- split_path_lines(path)
 
-  url <- tools::file_path_as_absolute(path) %>%
-    git2r::workdir() %>%
-    remote_repo(remote) %>%
-    remote_url() %>%
-    add_path_to_url(path_data)
+  url <- remote_url_to_file(path_lines$path, remote) %>%
+    add_lines_to_url(path_lines$lines)
 
   add_to_clipboard(url)
 
   invisible(url)
 }
 
-file_location <- function(path) {
-  start <- NULL
-  end <- NULL
+remote_url_to_file <- function(path, remote = "origin") {
+  absolute_file_path <- absolute_path(path)
+  absolute_repo_path <- absolute_file_path %>%
+    git2r::workdir()
 
+  relative_repo_file_path <- absolute_repo_path %>%
+    relative_path(absolute_file_path)
+
+  remote_repo_url <- absolute_repo_path %>%
+    remote_repo(remote) %>%
+    remote_url()
+
+  remote_repo_url %>%
+    add_file_path_to_url(relative_repo_file_path)
+}
+
+split_path_lines <- function(path) {
   if (is.null(path)) {
-    doc <- rstudioapi::getSourceEditorContext()
-    range <- rstudioapi::primary_selection(doc$selection)$range %>%
-      rstudioapi::as.document_range()
-
-    start <- range$start[[1]]
-    end <- range$end[[1]]
-
-    path <- doc$path
+    return(rstudio_selection())
   }
 
+  split <- stringr::str_split(path, "#")[[1]]
+  list(path = split[1], lines = split[2])
+}
 
-  absolute_path <- path.expand(path) %>%
+rstudio_selection <- function() {
+  doc <- rstudioapi::getSourceEditorContext()
+  range <- rstudioapi::primary_selection(doc$selection)$range %>%
+    rstudioapi::as.document_range()
+
+  list(
+    path = doc$path,
+    lines = list(start = range$start[[1]], end = range$end[[1]])
+  )
+}
+
+absolute_path <- function(path) {
+  path.expand(path) %>%
     tools::file_path_as_absolute()
-
-  list(path = relative_path(absolute_path), start = start, end = end)
 }
 
-relative_path <- function(absolute_path, start, end) {
-  absolute_project_path <- paste0(here::here(), .Platform$file.sep)
-
-  stringr::str_remove(absolute_path, absolute_project_path)
+relative_path <- function(outer_path, inner_path) {
+  outer_path <- paste0(outer_path, .Platform$file.sep)
+  stringr::str_remove(inner_path, outer_path)
 }
 
-add_path_to_url <- function(url, path) {
-  if (is.null(path$start) & is.null(path$end)) {
-    return(paste0(url$url, path$path))
+add_file_path_to_url <- function(url, path) {
+  paste0(url, path)
+}
+
+add_lines_to_url <- function(url, lines) {
+  paste0(url, parse_lines(lines, urltools::domain(url)))
+}
+
+parse_lines <- function(lines, ...) {
+  UseMethod("parse_lines")
+}
+
+parse_lines.character <- function(lines, ...) {
+  if (!is.na(lines)) {
+    return(paste0("#", lines))
   }
 
+  ""
+}
+
+parse_lines.list <- function(lines, ...) {
   switch(
-    url$domain,
-    github = paste0(url$url, path$path, "#L", path$start, "-L", path$end),
-    gitlab = paste0(url$url, path$path, "#L", path$start),
-    bitbucket = paste0(url$url, path$path, "#lines-", path$start)
+    list(...)$domain,
+    github.com = paste0(url, "#L", lines$start, "-L", lines$end),
+    gitlab.com = paste0(url, "#L", lines$start),
+    bitbucket.org = paste0(ur, "#lines-", lines$start)
   )
 }
 
@@ -119,12 +150,9 @@ remote_url <- function(repo) {
 
   stopifnot(repo$domain %in% names(web_ext))
 
-  list(
-    domain = repo$domain,
-    url = paste0(
-      "https://", repo$domain, web_ext[[repo$domain]],  "/",
-      repo$owner, "/", repo$name, "/", web_src[[repo$domain]], "/", repo$sha, "/"
-    )
+  paste0(
+    "https://", repo$domain, web_ext[[repo$domain]],  "/",
+    repo$owner, "/", repo$name, "/", web_src[[repo$domain]], "/", repo$sha, "/"
   )
 }
 
