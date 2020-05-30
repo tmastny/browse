@@ -1,15 +1,34 @@
-test_that("adding a path works", {
-  actual_url <- "https://github.com/tmastny/browse/blob/b03704441535c5c5581da4be2c576c73f4d7d75e/R/browse.R#L46-L46"
+test_that("correct link is returned from various working directories", {
 
-  test_url <- list(
-    domain = "github",
-    url = "https://github.com/tmastny/browse/blob/b03704441535c5c5581da4be2c576c73f4d7d75e/"
-  )
-  test_path <- list(
-    path = "R/browse.R",
-    start = 46,
-    end = 46
-  )
+  skip_if(not_git_repo)
 
-  expect_equal(actual_url, add_path_to_url(test_url, test_path))
+
+  actual_browse_url <- current_commit_url()
+  actual_description_url <- current_commit_url("DESCRIPTION")
+
+  link_at_top_level <- with_dir(here::here(), link("R/browse.R"))
+  link_in_directory <- with_dir(here::here("R"), link("browse.R"))
+  link_to_file_above <- with_dir(here::here("R"), link("../DESCRIPTION"))
+
+  absolute_path_to_file <- here::here("R", "browse.R")
+
+  link_outside_repo <- with_dir(tempdir(), link(absolute_path_to_file))
+
+  expect_equal(actual_browse_url, link_at_top_level)
+  expect_equal(actual_browse_url, link_in_directory)
+  expect_equal(actual_description_url, link_to_file_above)
+  expect_equal(actual_browse_url, link_outside_repo)
+})
+
+test_that("correct link is returned when using a tilde", {
+
+  skip_if(not_git_repo)
+  skip_if(no_tilde_dir)
+  skip_if_not(file_exists)
+
+  actual_url <- current_commit_url()
+
+  link_with_tilde <- link("~/rpackages/browse/R/browse.R")
+
+  expect_equal(actual_url, link_with_tilde)
 })

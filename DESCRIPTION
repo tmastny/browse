@@ -1,6 +1,6 @@
 Package: browse
 Title: Navigate to Files in Remote Git Repos
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: 
     person(given = "Timothy",
            family = "Mastny",
@@ -12,16 +12,20 @@ Description: browse provides tools to automatically navigate from R to remote
     to the remote Git repo right from the RStudio text editor.
 License: MIT + file LICENSE
 Suggests: 
-    testthat (>= 2.1.0)
+    testthat (>= 2.1.0),
+    withr,
+    knitr,
+    rmarkdown,
+    here
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.0.1.9000
+RoxygenNote: 7.1.0
 Imports: 
     stringr,
     git2r,
     magrittr,
-    here,
     urltools,
     rstudioapi,
-    clipr
+    clipr,
+    tools
