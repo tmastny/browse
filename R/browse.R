@@ -159,6 +159,10 @@ remote_url <- function(repo) {
 }
 
 strip_git_ext <- function(url) {
+  if (!stringr::str_ends(url, ".git")) {
+    return(url)
+  }
+
   stringr::str_sub(url, end = -5)
 }
 
