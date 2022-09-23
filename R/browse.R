@@ -214,8 +214,17 @@ remote_repo <- function(repo, remote) {
     remote <- getOption("browse.remote.default")
   }
 
-  remote_data <- git2r::remote_url(repo, remote) %>%
-    parse_remote_url()
+  remote_data <- try(
+    git2r::remote_url(repo, remote) %>%
+      parse_remote_url(),
+    silent = TRUE
+  )
+
+  if (inherits(remote_data, "try-error")) {
+    remotes <- read.table(text = system("git remote -vv", intern = TRUE))
+    remote_data <- remotes[remotes$V3 == "(push)", 2] %>%
+      parse_remote_url()
+  }
 
   head <- git2r::repository_head(repo)
 
